@@ -3,7 +3,7 @@
 require_relative "lib/version/version"
 
 Gem::Specification.new do |spec|
-  spec.name = "nostyleplease2plugins"
+  spec.name = "no-style-please2-plugins"
   spec.version = NoStylePlease2::VERSION
   spec.authors = ["vitock"]
   spec.email = [""]
