@@ -5,6 +5,9 @@ require 'digest'
 require 'ltec'
 require "jekyll"
 module Jekyll
+  def test
+    puts 333
+  end
   module EncFilter
     def getKey(content,page)
       site = Jekyll::sites[0]
@@ -73,7 +76,7 @@ module Jekyll
 
     
   end
-end
+
 
 Liquid::Template.register_filter(Jekyll::EncFilter)
 
@@ -87,64 +90,6 @@ def hex2bin(str)
   [str].pack "H*"
 end
 
-# # modifies the final html page by encrypting its secure-container content
-# Jekyll::Hooks.register :posts, :post_render do |post|
-#   # puts "---------"
-#   # puts post.site.config['enc_tags']
-#   # puts post.data["tags"]
-#   # puts post.data["key"]
-#   # puts "<<<<<<<"
-
-#   key = post.data["key"]
-#   if key 
-#     key = '' + key
-#   end
-#   if !key || key.length == 0
-#     # find key for tag 
-#     posttags = post.data["tags"]
-#     enctags = post.site.config['enc_tags']
-#     if posttags && posttags
-#       for tag in posttags
-#         if key && key.length > 0
-#           break;
-#         end
-#         for enctag in enctags
-#           if enctag['tag'] == tag 
-#             key = enctag['password']
-#             break
-#           end
-#         end
-#       end 
-#     end
-#   end
-
-  
 
 
-#   if key && key.length
-#     # prepare
-#     key = post.data['key']  	
-#     out = post.output
-
-#     next
-#     page = Nokogiri::HTML(out)
-#     content = page.css('div#secure-container')[0].inner_html
-
-#     # encrypt
-#     aes = OpenSSL::Cipher.new('AES-256-CBC')
-#     aes.encrypt	
-#     salt = OpenSSL::Random.random_bytes(8)
-#     iv = aes.random_iv
-#     aes.key = Digest::SHA256.digest(key + bin2hex(salt))
-#     aes.iv = iv
-#     encrypted = bin2hex(aes.update(content) + aes.final).strip
-  	
-#     # save
-#     page.css('div#secure-container')[0].inner_html = encrypted
-#     post.output = page
-
-#     # put iv and salt on page for decryption
-#     page.css('div#crypt_params')[0].inner_html = "<script>var _gj = {salt: '"+bin2hex(salt)+"',  iv: '"+bin2hex(iv)+"' } </script>"
-
-#   end
-# end
+end

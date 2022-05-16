@@ -112,7 +112,7 @@ EOF
     
 
     
-  end
+
   
   Liquid::Template.register_tag('asset_img', Jekyll::AssetImg)
   Liquid::Template.register_tag('include_code', Jekyll::IncludeCode)
@@ -178,7 +178,6 @@ end
   #   puts "...."
   # end
 
-  LOADINGFLG = :LOADINGFLG
   Jekyll::Hooks.register :site, :post_render do |st|
     # code to call after Jekyll renders a page
     rebuild = 0
@@ -201,4 +200,4 @@ end
     
   end
 
-  
+end

@@ -3,8 +3,7 @@
 require_relative "lib/version/version"
 
 Gem::Specification.new do |spec|
-  # nostyleplease2plugins is too long?
-  spec.name = "no-style-please2-plugins"
+  spec.name = "nostyleplease2plugins"
   spec.version = NoStylePlease2::VERSION
   spec.authors = ["vitock"]
   spec.email = [""]
@@ -33,7 +32,7 @@ Gem::Specification.new do |spec|
 
 
 
-  spec.add_dependency "jekyll", ">= 4.0.0"
+  spec.add_dependency "jekyll", ">= 4.0.0", "< 5.0"
   spec.add_dependency "ltec", "~> 0.1.2"
   spec.add_dependency "salsa20", "~> 0.1.3"
   spec.add_dependency "digest"
