@@ -7,7 +7,7 @@ Gem::Specification.new do |spec|
   spec.name = "NoStylePlease2"
   spec.version = NoStylePlease2::VERSION
   spec.authors = ["vitock"]
-  spec.email = ["-"]
+  spec.email = [""]
   
   spec.summary = "plugins for jekyll theme no-style-please2"
   spec.description = "plugins for jekyll theme no-style-please2  .  "
