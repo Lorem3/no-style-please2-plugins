@@ -1,0 +1,10 @@
+module No
+  module Style
+    module Please2
+      module Plugins
+        VERSION: String
+        # See the writing guide of rbs: https://github.com/ruby/rbs#guides
+      end
+    end
+  end
+end
