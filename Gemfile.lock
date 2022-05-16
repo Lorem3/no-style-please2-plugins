@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    nostyleplease2plugins (0.1.0)
+    no-style-please2-plugins (0.1.1)
       digest
       jekyll (~> 4.2.0)
       ltec (~> 0.1.2)
@@ -80,7 +80,7 @@ PLATFORMS
   x86_64-darwin-20
 
 DEPENDENCIES
-  nostyleplease2plugins!
+  no-style-please2-plugins!
   rake (~> 13.0)
 
 BUNDLED WITH

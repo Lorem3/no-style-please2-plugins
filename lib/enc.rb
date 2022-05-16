@@ -3,6 +3,7 @@ require 'base64'
 require 'salsa20'
 require 'digest'
 require 'ltec'
+require "jekyll"
 module Jekyll
   module EncFilter
     def getKey(content,page)

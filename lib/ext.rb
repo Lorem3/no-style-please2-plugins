@@ -1,3 +1,5 @@
+require "jekyll"
+require "liquid"
 
 module Jekyll
     class RenderTimeTag < Liquid::Tag
