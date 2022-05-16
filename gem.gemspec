@@ -4,7 +4,7 @@ require_relative "lib/version/version"
 
 Gem::Specification.new do |spec|
   # nostyleplease2plugins is too long?
-  spec.name = "NoStylePlease2"
+  spec.name = "nostyleplease2plugins"
   spec.version = NoStylePlease2::VERSION
   spec.authors = ["vitock"]
   spec.email = [""]
