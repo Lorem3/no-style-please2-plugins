@@ -80,7 +80,7 @@ module Jekyll
     end
     
 
-    $g_config = Jekyll::sites[0].config
+    
     class IncludeCode < Liquid::Tag
       @filecontent = ""
       def initialize(tag_name, text, tokens)
@@ -117,16 +117,13 @@ EOF
   Liquid::Template.register_tag('asset_img', Jekyll::AssetImg)
   Liquid::Template.register_tag('include_code', Jekyll::IncludeCode)
   Liquid::Template.register_tag('post_link', Jekyll::PostLink)
-  Liquid::Template.register_tag('cq', Jekyll::EmptyTag)
-  Liquid::Template.register_tag('endcq', Jekyll::EmptyTag)
-  Liquid::Template.register_tag('katexmm', Jekyll::EmptyTag)
-  Liquid::Template.register_tag('endkatexmm', Jekyll::EmptyTag)
   
 
 
 module Reading
   class Generator < Jekyll::Generator
     def generate(site)
+      $g_config = Jekyll::sites[0].config
       if !File.directory?("tags")
         Dir.mkdir "tags"
       end
