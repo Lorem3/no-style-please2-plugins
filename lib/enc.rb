@@ -63,8 +63,9 @@ module Jekyll
       return r ? "1":""
     end
 
-    def  contentEncrypt(content,page)
+    def  contentEncrypt(content,page,prefix)
       keyOri = getKey(content,page)
+      keyOri = prefix + keyOri + prefix
       key = Digest::MD5.hexdigest(keyOri).downcase()
       iv = Digest::MD5.hexdigest(content).downcase()
       ivHex = iv[0...16]
