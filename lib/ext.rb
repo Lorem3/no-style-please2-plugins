@@ -66,7 +66,7 @@ module Jekyll
         url = $g_title_link[@linkTitle]
         if url == nil || url == LOADINGFLG
           $g_title_link[@linkTitle] = LOADINGFLG
-          return "#{@linkTitle} is loading"
+          return "`#{@linkTitle} Not Found`"
         else 
           
           if $g_config["baseurl"] && $g_config["baseurl"].length > 0
