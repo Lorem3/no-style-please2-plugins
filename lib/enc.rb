@@ -6,7 +6,6 @@ require 'ltec'
 require "jekyll"
 module Jekyll
   def test
-    puts 333
   end
   module EncFilter
     def getKey(content,page)

@@ -182,7 +182,7 @@ end
       # puts "xx",pg.url,pg["title"]
       if $g_title_link[pg["title"]] == LOADINGFLG
         rebuild = 1
-        puts "post_link:#{pg["title"]} #{pg.url}"
+        # puts "post_link:#{pg["title"]} #{pg.url}"
         $g_title_link[pg["title"]] = pg.url
       end  
      }
