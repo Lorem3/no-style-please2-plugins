@@ -7,8 +7,8 @@ require "jekyll"
 module Jekyll
   def test
   end
-  module EncFilter
-    def getKey(content,page)
+  class EncFilterTool
+    def EncFilterTool.getKey(content,page)
       site = Jekyll::sites[0]
       key = "#{page['key']}"
       if key != nil
@@ -56,14 +56,19 @@ module Jekyll
 
       return   "#{key}"
     end
-    def encrypt_if_need(content,page)
-      key = getKey(content,page)
-      r = key != nil && key.length > 0
-      return r ? "1":""
+  end
+  module EncFilter
+    def get_encrypt_id(content,page)
+      key = EncFilterTool.getKey(content,page)
+      if key != nil && key.length > 0
+        return OpenSSL::HMAC.hexdigest("SHA256", "no-style-please2-key-digst-2022-05-21", key.to_s)[0..32]
+      else
+        return ""
+      end 
     end
 
-    def  contentEncrypt(content,page,prefix)
-      keyOri = getKey(content,page)
+    def  encrypt_content(content,page,prefix)
+      keyOri = EncFilterTool.getKey(content,page)
       keyOri = prefix + keyOri + prefix
       key = Digest::MD5.hexdigest(keyOri).downcase()
       iv = Digest::MD5.hexdigest(content).downcase()
