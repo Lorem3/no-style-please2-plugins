@@ -47,6 +47,37 @@ module Jekyll
       end
     end
 
+    class ImgLink < Liquid::Tag
+
+
+      def initialize(tag_name, text, tokens)
+        arr = text.strip.split(' ',2)
+        if arr.count == 2 
+          @img_name =  arr[1]
+          @title =  arr[0]
+        else
+          @img_name =  arr[0]
+          @title =  "img_link"
+        end
+      end
+    
+      def render(context)
+        path = context['page']['path']
+        
+
+        dirPath0 = path[0...(path.length - 3)]
+        pathComponent = dirPath0.split("/")
+        dirPath = pathComponent[-1]
+        
+        base = $g_config['baseurl']
+        link = "/pics/#{dirPath}/#{@img_name}"
+        if base && base.length
+          link = "#{base}/pics/#{dirPath}/#{@img_name}"
+        end 
+        return "[#{@title}](#{link})" 
+      end
+    end
+
     $g_title_link ||= {}
     LOADINGFLG = :LOADINGFLG
 
@@ -78,7 +109,6 @@ module Jekyll
         end 
       end
     end
-    
 
     
     class IncludeCode < Liquid::Tag
@@ -117,6 +147,9 @@ EOF
   Liquid::Template.register_tag('asset_img', Jekyll::AssetImg)
   Liquid::Template.register_tag('include_code', Jekyll::IncludeCode)
   Liquid::Template.register_tag('post_link', Jekyll::PostLink)
+  Liquid::Template.register_tag('img_link', Jekyll::ImgLink)
+
+  
   
 
 
