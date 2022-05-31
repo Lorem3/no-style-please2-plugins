@@ -1,8 +1,13 @@
-# No::Style::Please2::Plugins
 
-Welcome to your new gem! In this directory, you'll find the files you need to be able to package up your Ruby library into a gem. Put your Ruby code in the file `lib/no/style/please2/plugins`. To experiment with that code, run `bin/console` for an interactive prompt.
+this is jekyll plugin for no-style-please2 theme
 
-TODO: Delete this and the text above, and describe your gem
+## Feature
+ + tag support， this plugin will create tag page if you add tags in your post
+ + liquid tags 
+   + post_link ,link to post via title
+   + img_link ,link to a image
+   + asset_img insert a picture into the post content
+ + encryption support. encrypt the post content. you can set password for tag, or set a password in the post front matter. password will be encrypted by ECC cryption.
 
 ## Installation
 
@@ -16,7 +21,7 @@ If bundler is not being used to manage dependencies, install the gem by executin
 
 ## Usage
 
-TODO: Write usage instructions here
+see this [demo](https://vitock.ink/no-style-please-demo/)
 
 ## Development
 
@@ -26,4 +31,4 @@ To install this gem onto your local machine, run `bundle exec rake install`. To 
 
 ## Contributing
 
-Bug reports and pull requests are welcome on GitHub at https://github.com/[USERNAME]/no-style-please2-plugins.
+Bug reports and pull requests are welcome on GitHub at https://github.com/vitock/no-style-please2-plugins.
