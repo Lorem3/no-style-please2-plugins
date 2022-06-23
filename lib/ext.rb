@@ -27,7 +27,12 @@ module Jekyll
 
 
       def initialize(tag_name, text, tokens)
-        @img_name =  text.strip
+        arr =  text.strip.split(" ")
+        @img_name = arr[0]
+        @img_width = nil
+        if arr.count > 1
+          @img_width = arr[1]
+        end
       end
     
       def render(context)
@@ -43,7 +48,14 @@ module Jekyll
         if base && base.length
           link = "#{base}/pics/#{dirPath}/#{@img_name}"
         end 
-        return "![](#{link})" 
+
+        if @img_width != nil
+          return "<img src='#{link}' style='width:#{@img_width}px'>"
+        else
+          return "![](#{link})" 
+        end
+
+        
       end
     end
 
