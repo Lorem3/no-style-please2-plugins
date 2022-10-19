@@ -34,7 +34,7 @@ Gem::Specification.new do |spec|
 
   spec.add_dependency "jekyll", "~>4.0"
   spec.add_dependency "ltec", "~> 0.1.2"
-  spec.add_dependency "salsa20", "~> 0.1.3"
+  # spec.add_dependency "salsa20", "~> 0.1.3"
   spec.add_dependency "digest"
   # Uncomment to register a new dependency of your gem
   # spec.add_dependency "example-gem", "~> 1.0"

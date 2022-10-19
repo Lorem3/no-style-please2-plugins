@@ -1,6 +1,5 @@
 require 'openssl'
 require 'base64'
-require 'salsa20'
 require 'digest'
 require 'ltec'
 require "jekyll"
@@ -58,6 +57,25 @@ module Jekyll
     end
   end
   module EncFilter
+
+    def genKey(password)
+      salt = 'this is a salt string 20221019'
+      iter = 12345
+      key_len = 32
+      key = OpenSSL::KDF.pbkdf2_hmac(password, salt: salt, iterations: iter,
+          length: key_len, hash: "sha256")
+      return key
+    end 
+
+    def encrypt(msg,password)
+      cipher = OpenSSL::Cipher::AES.new(256, :GCM).encrypt
+      iv = cipher.random_iv
+      cipher.iv = iv
+      cipher.key = genKey password
+      encrypted = cipher.update(msg) + cipher.final
+      return  'E1.' + Base64.strict_encode64(iv  + encrypted + cipher.auth_tag)
+      
+    end 
     def get_encrypt_id(content,page)
       key = EncFilterTool.getKey(content,page)
       if key != nil && key.length > 0
@@ -68,15 +86,9 @@ module Jekyll
     end
 
     def  encrypt_content(content,page,prefix)
-      keyOri = EncFilterTool.getKey(content,page)
-      keyOri = prefix + keyOri + prefix
-      key = Digest::MD5.hexdigest(keyOri).downcase()
-      iv = Digest::MD5.hexdigest(content).downcase()
-      ivHex = iv[0...16]
-      iv = ivHex.scan(/../).map { |x| x.hex.chr }.join
-      encryptor = Salsa20.new(key, iv)
-      encrypted_text = encryptor.encrypt(content)
-      return ivHex + ":" + Base64.strict_encode64(encrypted_text)
+      psw = EncFilterTool.getKey(content,page)
+      psw = prefix + psw + prefix
+      return encrypt content,psw
     end
 
     
