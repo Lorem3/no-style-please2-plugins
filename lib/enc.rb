@@ -58,12 +58,18 @@ module Jekyll
   end
   module EncFilter
 
+    $KeyMap = {}
     def genKey(password)
+      cacheKey = $KeyMap[password]
+      if cacheKey
+        return cacheKey
+      end
       salt = 'this is a salt string 20221019'
       iter = 12345
       key_len = 32
       key = OpenSSL::KDF.pbkdf2_hmac(password, salt: salt, iterations: iter,
           length: key_len, hash: "sha256")
+      $KeyMap[password] = key
       return key
     end 
 

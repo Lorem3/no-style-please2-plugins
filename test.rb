@@ -2,12 +2,19 @@
 
 require 'openssl'
 require 'base64'
+$Key = {}
 def genKey(password)
+    cache = $Key[password]
+    if cache
+        puts "cache",cache
+        return cache
+    end
     salt = 'this is a salt string 20221019'
     iter = 12345
     key_len = 32
     key = OpenSSL::KDF.pbkdf2_hmac(password, salt: salt, iterations: iter,
         length: key_len, hash: "sha256")
+    $Key[password] = key
     return key
 end 
 
@@ -52,3 +59,9 @@ puts z[3..-1]
 
 m = decrypt z ,'123'
 puts m
+
+genKey '123'
+genKey '123'
+genKey '123'
+genKey '456'
+puts $Key
