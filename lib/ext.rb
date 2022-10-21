@@ -167,6 +167,7 @@ EOF
 
 module Reading
   class Generator < Jekyll::Generator
+    $auto_gen_tag_flag = 0
     def generate(site)
       $g_config = Jekyll::sites[0].config
       if !File.directory?("tags")
@@ -178,6 +179,7 @@ module Reading
       for tag in reading
         tagpath = "tags/#{tag}.md"
         if !File.file?(tagpath)
+          $auto_gen_tag_flag += 1
           tagTmp = <<EOF
 ---
 layout: tagpage
@@ -232,8 +234,9 @@ end
       end  
      }
 
-    if rebuild == 1
-      puts "rebuild"
+    if rebuild == 1 || $auto_gen_tag_flag > 0
+      puts "rebuild" , $auto_gen_tag_flag
+      $auto_gen_tag_flag = 0
       st.process
 
     end
