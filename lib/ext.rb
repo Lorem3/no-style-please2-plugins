@@ -242,4 +242,15 @@ end
     
   end
 
+  
+  Jekyll::Hooks.register :site, :after_init do |st|
+    # code to call after Jekyll renders a page
+    filename =  'index.html'
+    if !File.file?(filename)
+      tagTmp = "---\nlayout: paginate\n---"
+      File.open(filename , 'w+')  { |f| f.write(tagTmp) }
+      print 'generate ' + filename
+    end 
+  end
+
 end
