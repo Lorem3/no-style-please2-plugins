@@ -85,7 +85,8 @@ module Jekyll
     def get_encrypt_id(content,page)
       key = EncFilterTool.getKey(content,page)
       if key != nil && key.length > 0
-        return OpenSSL::HMAC.hexdigest("SHA256", "no-style-please2-key-digst-2022-05-21", key.to_s)[0..32]
+        enckey = genKey(key).unpack('H*').first 
+        return OpenSSL::HMAC.hexdigest("SHA256", "no-style-please2-key-digst-2022-05-21", key.to_s + enckey)[0..32]
       else
         return ""
       end 
