@@ -1,5 +1,6 @@
 require "jekyll"
 require "liquid"
+require "fileutils"
 
 module Jekyll
     class RenderTimeTag < Liquid::Tag
@@ -254,6 +255,21 @@ end
       File.open(filename , 'w+')  { |f| f.write(tagTmp) }
       print 'generate ' + filename
     end 
+
+    assets = 'assets'
+    
+    if !Dir.exist?(assets)
+      Dir.mkdir(assets)
+    end 
+
+    dynpath =  assets +'/dyn'
+    puts dynpath
+    if Dir.exist?(dynpath)
+      FileUtils.rm_rf(dynpath)
+    end 
+    FileUtils.mkdir(dynpath)
+
+
   end
 
 end

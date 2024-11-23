@@ -3,6 +3,7 @@ require 'base64'
 require 'digest'
 require 'ltec'
 require "jekyll"
+require "fileutils"
 module Jekyll
   def test
   end
@@ -96,6 +97,30 @@ module Jekyll
       psw = EncFilterTool.getKey(content,page)
       psw = prefix + psw + prefix
       return encrypt content,psw
+    end
+
+    def  write_file(new_content,file_path)
+
+      dirpath  = File.dirname(file_path)
+      File.dirname(dirpath)
+
+
+      if File.exist?(file_path)
+        # 读取现有文件内容
+        current_content = File.read(file_path)
+        # 如果内容不同，则写入新内容
+        unless current_content == new_content
+          File.write(file_path, new_content)
+          puts "文件内容已更新。"
+        else
+          puts "文件内容相同，无需更新。"
+        end
+      else
+        # 文件不存在，直接写入
+        File.write(file_path, new_content)
+        puts "文件不存在，已创建新文件并写入内容。"
+      end
+      return ''
     end
 
     
