@@ -111,14 +111,14 @@ module Jekyll
         # 如果内容不同，则写入新内容
         unless current_content == new_content
           File.write(file_path, new_content)
-          puts "文件内容已更新。"
+          puts "write file"  + file_path
         else
-          puts "文件内容相同，无需更新。"
+          puts "write file: same, skip " + file_path
         end
       else
         # 文件不存在，直接写入
         File.write(file_path, new_content)
-        puts "文件不存在，已创建新文件并写入内容。"
+        puts "write file"  + file_path
       end
       return ''
     end

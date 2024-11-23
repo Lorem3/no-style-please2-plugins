@@ -249,12 +249,7 @@ end
   
   Jekyll::Hooks.register :site, :after_init do |st|
     # code to call after Jekyll renders a page
-    filename =  'index.html'
-    if !File.file?(filename)
-      tagTmp = "---\nlayout: paginate\n---"
-      File.open(filename , 'w+')  { |f| f.write(tagTmp) }
-      print 'generate ' + filename
-    end 
+
 
     assets = 'assets'
     
@@ -268,6 +263,23 @@ end
       FileUtils.rm_rf(dynpath)
     end 
     FileUtils.mkdir(dynpath)
+
+
+    filename =  'index.html'
+    if !File.file?(filename)
+      tagTmp = "---\nlayout: paginate\n---"
+      File.open(filename , 'w+')  { |f| f.write(tagTmp) }
+      print 'generate ' + filename
+    end 
+
+    filename =  'HeatMap.md'
+    if !File.file?(filename)
+      tagTmp = "---\nlayout: heatmap\n---"
+      File.open(filename , 'w+')  { |f| f.write(tagTmp) }
+      print 'heatmpa ' + filename
+    end 
+
+    
 
 
   end
