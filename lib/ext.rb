@@ -123,6 +123,28 @@ module Jekyll
       end
     end
 
+    class IncludeFile < Liquid::Tag
+  
+      def initialize(tag_name, text, tokens)
+        rootPath0 = $g_config['include_file_path'] || 'assets'
+        filePath0 = "#{rootPath0}/#{text}".strip!()
+        begin
+          file = File.open(filePath0)
+          @filecontent = file.read()
+        rescue => exception
+          puts exception
+          @filecontent = "load file:#{text} failed"
+          
+        end
+       
+      end
+    
+      def render(context)
+        return @filecontent
+      end
+    end
+
+    
     
     class IncludeCode < Liquid::Tag
       @filecontent = ""
@@ -161,6 +183,7 @@ EOF
   Liquid::Template.register_tag('include_code', Jekyll::IncludeCode)
   Liquid::Template.register_tag('post_link', Jekyll::PostLink)
   Liquid::Template.register_tag('img_link', Jekyll::ImgLink)
+  Liquid::Template.register_tag('include_file', Jekyll::IncludeFile)
 
   
   
