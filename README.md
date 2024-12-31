@@ -21,7 +21,7 @@ If bundler is not being used to manage dependencies, install the gem by executin
 
 ## Usage
 
-see this [demo](https://vitock.ink/no-style-please-demo/)
+see this [demo](https://vitock.github.io/no-style-please/)
 
 ## Development
 
