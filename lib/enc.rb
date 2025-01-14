@@ -5,9 +5,46 @@ require 'ltec'
 require "jekyll"
 require "fileutils"
 module Jekyll
-  def test
-  end
+  
+  
+
   class EncFilterTool
+    def EncFilterTool.getAllKey(page)
+      site = Jekyll::sites[0]
+      keys = []
+      key = "#{page['key']}"
+      if key != nil && key.length > 0
+        keys << key
+      end
+
+     posttags = page["tags"]
+     enctags = site.config['enc_tags']
+     if posttags && posttags.length > 0 && enctags
+       
+       for tag in posttags
+         for enctag in enctags
+           if enctag['tag'] == tag 
+             key = "#{enctag['password']}"
+             keys << key
+           end
+         end
+       end 
+     end
+     keys.map do |key| 
+      if key.length > 50
+        pubkey = ENV["JEKYLL_EC_PRIVATEKEY"]
+        if pubkey == nil 
+          raise 'JEKYLL_EC_PRIVATEKEY not set on envionment'
+        end 
+        key = Ltec::EC.decrypt(pubkey,key)
+
+        if key == nil  || key.length == 0 
+          raise "key decription fail"
+        end
+      end
+      key
+     end
+    end
     def EncFilterTool.getKey(content,page)
       site = Jekyll::sites[0]
       key = "#{page['key']}"
@@ -59,7 +96,15 @@ module Jekyll
   end
   module EncFilter
 
+
     $KeyMap = {}
+    def bin2hex(str)
+      str.unpack('C*').map{ |b| "%02x" % b }.join('')
+    end
+  
+    def hex2bin(str)
+      [str].pack "H*"
+    end
     def genKey(password)
       cacheKey = $KeyMap[password]
       if cacheKey
@@ -80,7 +125,7 @@ module Jekyll
       cipher.iv = iv
       cipher.key = genKey password
       encrypted = cipher.update(msg) + cipher.final
-      return  'E1.' + Base64.strict_encode64(iv  + encrypted + cipher.auth_tag)
+      return  'E2.' + Base64.strict_encode64(iv  + encrypted + cipher.auth_tag)
       
     end 
     def get_encrypt_id(content,page)
@@ -92,7 +137,6 @@ module Jekyll
         return ""
       end 
     end
-
     def  encrypt_content(content,page,prefix)
       psw = EncFilterTool.getKey(content,page)
       psw = prefix + psw + prefix
@@ -123,6 +167,35 @@ module Jekyll
       return ''
     end
 
+    def rand_bytes(_,n2)
+      return bin2hex(OpenSSL::Random.random_bytes(n2))
+    end
+
+    def encrypt_content_v2(content,pswHex)
+      if !pswHex || pswHex.length != 64
+        raise "invalid Key:" + pswHex
+      end
+      cipher = OpenSSL::Cipher::AES.new(256, :CBC).encrypt
+      iv = cipher.random_iv
+      cipher.iv = iv
+      cipher.key = hex2bin(pswHex)
+      encrypted = cipher.update(content) + cipher.final
+      return  'E2.' + Base64.strict_encode64(iv  + encrypted )
+    end
+
+
+    def encrypt_key(x,page,keyHex2Enc,encid)
+      arr = EncFilterTool.getAllKey(page)
+      newArr = arr.map do |k| 
+        key = genKey  encid + k + encid
+        hexKey = bin2hex key
+        encrypt_content_v2(hex2bin(keyHex2Enc),hexKey)
+      end
+
+      newArr.join('#')  
+    end
+    
+
     
   end
 
@@ -130,14 +203,6 @@ module Jekyll
 Liquid::Template.register_filter(Jekyll::EncFilter)
 
 
-
-def bin2hex(str)
-  str.unpack('C*').map{ |b| "%02x" % b }.join('')
-end
-
-def hex2bin(str)
-  [str].pack "H*"
-end
 
 
 
