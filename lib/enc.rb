@@ -204,7 +204,6 @@ module Jekyll
         hexKey = bin2hex key
         Base64.strict_decode64(encrypt_content_v2(EncFilter.hex2bin(keyHex2Enc),hexKey))
       end
-
       Base64.strict_encode64(newArr.join)
 
     end
