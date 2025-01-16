@@ -2,6 +2,7 @@
 
 require 'openssl'
 require 'base64'
+require_relative "lib/enc"
 $Key = {}
 def genKey(password)
     cache = $Key[password]
@@ -51,6 +52,8 @@ def decrypt(enstring,password)
 end 
 
 
+
+
 msg = '我的 12a23007'
 z = encrypt msg,'123'
 puts z 
@@ -64,4 +67,13 @@ genKey '123'
 genKey '123'
 genKey '123'
 genKey '456'
-puts $Key
+ 
+puts '---'
+a = Jekyll::nmberToBinary4(256)
+puts a.unpack1('H*')
+a = a.bytes.map.each_with_index do |byte,i | byte ^ i 
+end.pack('C*')
+ 
+puts a.unpack1('H*') 
+
+puts Jekyll::Test.encrypt_content_v2('333333a','00000000000000052f5c9b07ebc4464717978b174c440573df03e2962d98946c')

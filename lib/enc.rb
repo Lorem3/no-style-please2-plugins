@@ -94,6 +94,11 @@ module Jekyll
       return   "#{key}"
     end
   end
+  # 大端模式
+  def self.nmberToBinary4(num)
+    [num].pack("N")[0, 4]
+  end
+
   module EncFilter
 
 
@@ -102,7 +107,7 @@ module Jekyll
       str.unpack('C*').map{ |b| "%02x" % b }.join('')
     end
   
-    def hex2bin(str)
+    def self.hex2bin(str)
       [str].pack "H*"
     end
     def genKey(password)
@@ -171,30 +176,39 @@ module Jekyll
       return bin2hex(OpenSSL::Random.random_bytes(n2))
     end
 
+    
     def encrypt_content_v2(content,pswHex)
       if !pswHex || pswHex.length != 64
         raise "invalid Key:" + pswHex
       end
-      cipher = OpenSSL::Cipher::AES.new(256, :CBC).encrypt
+      cipher = OpenSSL::Cipher::AES.new(256, :CTR).encrypt
       iv = cipher.random_iv
       cipher.iv = iv
-      cipher.key = hex2bin(pswHex)
+      cipher.key = EncFilter.hex2bin(pswHex)
       encrypted = cipher.update(content) + cipher.final
-      return  'E2.' + Base64.strict_encode64(iv  + encrypted )
-    end
 
+      
+      len = 4 +  iv.length + encrypted.length
+      lenBf = Jekyll.nmberToBinary4(len)
+      lenBf2 = lenBf.bytes.map.each_with_index do |v,i|
+        z = i ^ iv.bytes[i ]
+        v ^ z
+      end.pack('C*')
+      return   Base64.strict_encode64(lenBf2 + iv  + encrypted )
+    end
 
     def encrypt_key(x,page,keyHex2Enc,encid)
       arr = EncFilterTool.getAllKey(page)
       newArr = arr.map do |k| 
         key = genKey  encid + k + encid
         hexKey = bin2hex key
-        encrypt_content_v2(hex2bin(keyHex2Enc),hexKey)
+        Base64.strict_decode64(encrypt_content_v2(EncFilter.hex2bin(keyHex2Enc),hexKey))
       end
 
-      newArr.join('#')  
+      Base64.strict_encode64(newArr.join)
+
     end
-    
+ 
 
     
   end
@@ -202,7 +216,9 @@ module Jekyll
 
 Liquid::Template.register_filter(Jekyll::EncFilter)
 
-
+class Test
+  extend EncFilter
+end
 
 
 
