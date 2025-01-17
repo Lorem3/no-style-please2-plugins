@@ -205,11 +205,14 @@ module Jekyll
         Base64.strict_decode64(encrypt_content_v2(EncFilter.hex2bin(keyHex2Enc),hexKey))
       end
       Base64.strict_encode64(newArr.join)
+    end
+    def gen_test_data_forkey(pswHex)
+      rndBf = Base64.strict_encode64(EncFilter.hex2bin(rand_bytes('',63)))
+      encData = encrypt_content_v2(rndBf,pswHex)
+      rndBf + '.' + encData
 
     end
- 
-
-    
+       
   end
 
 

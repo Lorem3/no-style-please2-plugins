@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    no-style-please2-plugins (0.9.0)
+    no-style-please2-plugins (0.9.1)
       digest
       jekyll (~> 4.0)
       ltec (~> 0.1.4)
@@ -55,7 +55,7 @@ GEM
     listen (3.9.0)
       rb-fsevent (~> 0.10, >= 0.10.3)
       rb-inotify (~> 0.9, >= 0.9.10)
-    ltec (0.1.4)
+    ltec (0.1.4.1)
       openssl
     mercenary (0.4.0)
     openssl (3.3.0)
