@@ -77,3 +77,9 @@ end.pack('C*')
 puts a.unpack1('H*') 
 
 puts Jekyll::Test.encrypt_content_v2('333333a','00000000000000052f5c9b07ebc4464717978b174c440573df03e2962d98946c')
+text = "oo"
+if text.start_with?("/")
+    puts "aaa"
+else
+    puts "bbb"
+end

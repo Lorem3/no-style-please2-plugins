@@ -151,7 +151,13 @@ module Jekyll
       def initialize(tag_name, text, tokens)
 
         rootPath = $g_config['code_root_path'] || 'static'
-        filePath = "#{rootPath}/#{text}".strip!()
+        if text.start_with?("/")
+          filePath = "#{rootPath}#{text}".strip!()
+        else
+          filePath = "#{rootPath}/#{text}".strip!()
+        end
+        filePath = File.expand_path(filePath)
+        
         begin
           file = File.open(filePath)
           @filecontent = file.read()
