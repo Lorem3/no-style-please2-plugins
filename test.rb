@@ -83,3 +83,8 @@ if text.start_with?("/")
 else
     puts "bbb"
 end
+
+puts "12334"[1..2]
+puts "12334"[1...2]
+puts "12334"[1..-1]
+puts "12334"[1...-1]

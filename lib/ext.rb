@@ -152,18 +152,20 @@ module Jekyll
 
         rootPath = $g_config['code_root_path'] || 'static'
         if text.start_with?("/")
-          filePath = "#{rootPath}#{text}".strip!()
+          filePath = "#{text}"[1..-1].strip!()
         else
           filePath = "#{rootPath}/#{text}".strip!()
         end
         filePath = File.expand_path(filePath)
+        puts '--------- inluce code-------'
+        puts filePath
         
         begin
           file = File.open(filePath)
           @filecontent = file.read()
         rescue => exception
           puts exception
-          @filecontent = "load file:#{text} failed"
+          @filecontent = "load file:#{filePath} failed"
           
         end
         
