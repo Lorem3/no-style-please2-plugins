@@ -157,8 +157,7 @@ module Jekyll
           filePath = "#{rootPath}/#{text}".strip!()
         end
         filePath = File.expand_path(filePath)
-        puts '--------- inluce code-------'
-        puts filePath
+        puts "--------- inluce code: #{filePath}"
         
         begin
           file = File.open(filePath)
