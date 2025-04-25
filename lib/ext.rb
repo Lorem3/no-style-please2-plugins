@@ -157,7 +157,7 @@ module Jekyll
           filePath = "#{rootPath}/#{text}".strip!()
         end
         filePath = File.expand_path(filePath)
-        puts "--------- inluce code: #{filePath}"
+        puts "--------- include code: #{filePath}"
         
         begin
           file = File.open(filePath)
@@ -181,6 +181,36 @@ EOF
       end
     end
 
+
+    class IncludeRaw < Liquid::Tag
+      @filecontent = ""
+      def initialize(tag_name, text, tokens)
+
+        rootPath = $g_config['code_root_path'] || 'static'
+        if text.start_with?("/")
+          filePath = "#{text}"[1..-1].strip!()
+        else
+          filePath = "#{rootPath}/#{text}".strip!()
+        end
+        filePath = File.expand_path(filePath)
+        puts "--------- include raw:\n #{filePath}"
+        
+        begin
+          file = File.open(filePath)
+          @filecontent = file.read()
+        rescue => exception
+          puts exception
+          @filecontent = "load file:#{filePath} failed"
+          
+        end
+        
+      end
+      
+      def render(context)
+        return @filecontent
+      end
+    end
+
     
 
     
@@ -188,6 +218,9 @@ EOF
   
   Liquid::Template.register_tag('asset_img', Jekyll::AssetImg)
   Liquid::Template.register_tag('include_code', Jekyll::IncludeCode)
+  Liquid::Template.register_tag('include_raw', Jekyll::IncludeRaw)
+
+  
   Liquid::Template.register_tag('post_link', Jekyll::PostLink)
   Liquid::Template.register_tag('img_link', Jekyll::ImgLink)
   Liquid::Template.register_tag('include_file', Jekyll::IncludeFile)
