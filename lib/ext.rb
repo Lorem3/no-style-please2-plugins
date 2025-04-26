@@ -186,14 +186,39 @@ EOF
       Syntax = /\s*file\s*=\s*(\S+)/
  
        
-      def getPath(text)
+      def getPath(text,context)
         rootPath = $g_config['code_root_path'] || 'static'
         if text.start_with?("/")
           filePath = "#{text}"[1..-1].strip()
+          filePath = File.expand_path(filePath)
+        elsif  text.start_with?("@") 
+          # _include/
+          filePath = "#{text}"[1..-1].strip()
+
+
+          site = context.registers[:site]
+          user_include_path = File.join(site.source, "_includes", filePath)
+
+          site = Jekyll.sites.first # 或你自己已有的 site
+          theme = site.theme
+
+          themeroot = theme.root # 就是当前主题的根目录
+          plugin_include_file = File.join(themeroot, "_includes/" + filePath)
+
+          if File.exist?(user_include_path)
+            filePath = user_include_path
+          elsif File.exist?(plugin_include_file)
+            filePath = plugin_include_file
+          else
+            filePath = user_include_path
+          end
+
+
         else
           filePath = "#{rootPath}/#{text}".strip()
+          filePath = File.expand_path(filePath)
         end
-        filePath = File.expand_path(filePath)
+        return filePath
       end
       def initialize(tag_name, text, tokens)
 
@@ -216,7 +241,7 @@ EOF
         if @dynamicFile.length > 1
           filePath = context[@dynamicFile]
         end
-        filePath = getPath(filePath)
+        filePath = getPath(filePath,context)
 
         puts "include_raw :#{filePath} failed   #{@dynamicFile}"
         begin
