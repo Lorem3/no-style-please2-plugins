@@ -127,7 +127,7 @@ module Jekyll
   
       def initialize(tag_name, text, tokens)
         rootPath0 = $g_config['include_file_path'] || 'assets'
-        filePath0 = "#{rootPath0}/#{text}".strip!()
+        filePath0 = "#{rootPath0}/#{text}".strip()
         begin
           file = File.open(filePath0)
           @filecontent = file.read()
@@ -152,9 +152,9 @@ module Jekyll
 
         rootPath = $g_config['code_root_path'] || 'static'
         if text.start_with?("/")
-          filePath = "#{text}"[1..-1].strip!()
+          filePath = "#{text}"[1..-1].strip()
         else
-          filePath = "#{rootPath}/#{text}".strip!()
+          filePath = "#{rootPath}/#{text}".strip()
         end
         filePath = File.expand_path(filePath)
         puts "--------- include code: #{filePath}"
@@ -183,31 +183,50 @@ EOF
 
 
     class IncludeRaw < Liquid::Tag
-      @filecontent = ""
-      def initialize(tag_name, text, tokens)
-
+      Syntax = /\s*file\s*=\s*(\S+)/
+ 
+       
+      def getPath(text)
         rootPath = $g_config['code_root_path'] || 'static'
         if text.start_with?("/")
-          filePath = "#{text}"[1..-1].strip!()
+          filePath = "#{text}"[1..-1].strip()
         else
-          filePath = "#{rootPath}/#{text}".strip!()
+          filePath = "#{rootPath}/#{text}".strip()
         end
         filePath = File.expand_path(filePath)
-        puts "--------- include raw:\n #{filePath}"
-        
-        begin
-          file = File.open(filePath)
-          @filecontent = file.read()
-        rescue => exception
-          puts exception
-          @filecontent = "load file:#{filePath} failed"
-          
+      end
+      def initialize(tag_name, text, tokens)
+
+        @file = ""
+        @dynamicFile = ""
+
+        if text =~ Syntax
+          dynfile = Regexp.last_match(1) 
+          @dynamicFile = dynfile.gsub(/^['"]|['"]$/, '')
+        else
+          @filename = text.gsub(/^['"]|['"]$/, '')
         end
+        
+       
         
       end
       
       def render(context)
-        return @filecontent
+        filePath = @filename
+        if @dynamicFile.length > 1
+          filePath = context[@dynamicFile]
+        end
+        filePath = getPath(filePath)
+
+        puts "include_raw :#{filePath} failed   #{@dynamicFile}"
+        begin
+          file = File.open(filePath)
+          return file.read()
+        rescue => exception
+          puts exception
+          return "Load file:#{filePath} failed   #{@dynamicFile}"
+          
+        end
       end
     end
 
