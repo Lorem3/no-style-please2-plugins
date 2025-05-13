@@ -1,7 +1,7 @@
 require "jekyll"
 require "liquid"
 require "fileutils"
-
+require 'base64'
 module Jekyll
     class RenderTimeTag < Liquid::Tag
   
@@ -255,6 +255,78 @@ EOF
       end
     end
 
+
+    class FileBase64 < Liquid::Tag
+      Syntax = /\s*file\s*=\s*(\S+)/
+ 
+       
+      def getPath(text,context)
+        rootPath = $g_config['code_root_path'] || 'static'
+        if text.start_with?("/")
+          filePath = "#{text}"[1..-1].strip()
+          filePath = File.expand_path(filePath)
+        elsif  text.start_with?("@") 
+          # _include/
+          filePath = "#{text}"[1..-1].strip()
+
+
+          site = context.registers[:site]
+          user_include_path = File.join(site.source, "_includes", filePath)
+
+          site = Jekyll.sites.first # 或你自己已有的 site
+          theme = site.theme
+
+          themeroot = theme.root # 就是当前主题的根目录
+          plugin_include_file = File.join(themeroot, "_includes/" + filePath)
+
+          if File.exist?(user_include_path)
+            filePath = user_include_path
+          elsif File.exist?(plugin_include_file)
+            filePath = plugin_include_file
+          else
+            filePath = user_include_path
+          end
+
+
+        else
+          filePath = "#{rootPath}/#{text}".strip()
+          filePath = File.expand_path(filePath)
+        end
+        return filePath
+      end
+      def initialize(tag_name, text, tokens)
+
+        @file = ""
+        @dynamicFile = ""
+
+        if text =~ Syntax
+          dynfile = Regexp.last_match(1) 
+          @dynamicFile = dynfile.gsub(/^['"]|['"]$/, '')
+        else
+          @filename = text.gsub(/^['"]|['"]$/, '')
+        end
+        
+       
+        
+      end
+      
+      def render(context)
+        filePath = @filename
+        if @dynamicFile.length > 1
+          filePath = context[@dynamicFile]
+        end
+        filePath = getPath(filePath,context)
+
+        begin
+          file = File.open(filePath)
+          return Base64.strict_encode64 file.read()
+        rescue => exception
+          puts exception
+          return "Base64 file:#{filePath} failed   #{@dynamicFile}"
+          
+        end
+      end
+    end
     
 
     
@@ -263,6 +335,8 @@ EOF
   Liquid::Template.register_tag('asset_img', Jekyll::AssetImg)
   Liquid::Template.register_tag('include_code', Jekyll::IncludeCode)
   Liquid::Template.register_tag('include_raw', Jekyll::IncludeRaw)
+  Liquid::Template.register_tag('file_base64', Jekyll::FileBase64)
+  
 
   
   Liquid::Template.register_tag('post_link', Jekyll::PostLink)
