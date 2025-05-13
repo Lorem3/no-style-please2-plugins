@@ -222,6 +222,11 @@ class Test
   extend EncFilter
 end
 
+class EncFilterClass
+  include EncFilter
+end
+
+
 
 
 end

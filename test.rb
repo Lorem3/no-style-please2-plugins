@@ -2,6 +2,7 @@
 
 require 'openssl'
 require 'base64'
+
 require_relative "lib/enc"
 $Key = {}
 def genKey(password)

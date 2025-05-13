@@ -2,6 +2,7 @@ require "jekyll"
 require "liquid"
 require "fileutils"
 require 'base64'
+require 'enc'
 module Jekyll
     class RenderTimeTag < Liquid::Tag
   
@@ -35,6 +36,24 @@ module Jekyll
           @img_width = arr[1]
         end
       end
+
+      def guess_image_mime_by_base64(base64_str)
+        prefix = base64_str[0, 15]  # 取前 15 个字符足够判断
+      
+        case
+        when prefix.start_with?('/9j/')
+          'image/jpeg'
+        when prefix.start_with?('iVBOR')
+          'image/png'
+        when prefix.start_with?('R0lGODdh', 'R0lGODlh')
+          'image/gif'
+        when prefix.start_with?('UklGR')
+          'image/webp'
+        else
+          'image/png'
+        end
+      end
+      
     
       def render(context)
         path = context['page']['path']
@@ -49,6 +68,32 @@ module Jekyll
         if base && base.length
           link = "#{base}/pics/#{dirPath}/#{@img_name}"
         end 
+
+        enc = EncFilterClass.new
+        encid = enc.get_encrypt_id('',context['page'])
+        if !encid.nil? && encid.length > 0
+          begin
+            file = File.open(File.expand_path("pics/#{dirPath}/#{@img_name}"))
+            b64 = Base64.strict_encode64 file.read()
+            link =  "data:image/#{guess_image_mime_by_base64(b64)};base64," + b64  
+            puts "Encrypt img #{"pics/#{dirPath}/#{@img_name}"}"
+          rescue => exception
+            puts "\n----------------------------"
+            puts exception
+
+            puts "\nEncrypt img #{"pics/#{dirPath}/#{@img_name}"} Fail"
+            puts "----------------------------"
+            
+            link = 'ERROR '
+          end
+          
+          
+
+
+          
+        else
+        end
+        
 
         if @img_width != nil
           return "<img src='#{link}' style='width:#{@img_width}px'>"
